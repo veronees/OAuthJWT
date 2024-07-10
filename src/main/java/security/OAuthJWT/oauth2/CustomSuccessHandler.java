@@ -7,9 +7,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import security.OAuthJWT.dto.CustomOauth2User;
 import security.OAuthJWT.jwt.JWTUtil;
 
 import java.io.IOException;
@@ -24,9 +25,10 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        CustomOauth2User customUserDetails = (CustomOauth2User) authentication;
+        OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) authentication;
 
-        String username = customUserDetails.getUsername();
+        OAuth2User principal = authToken.getPrincipal();
+        String username = principal.getName();
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
