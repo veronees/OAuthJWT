@@ -42,12 +42,18 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
-        //인증된 Authentication객체에서 얻은 username과 role로 JWT token을 생성한다.
-        String token = jwtUtil.createJwt(name, username, role, 60*60*60L);
+        if (role.equals("ROLE_USER")) {
+            String token = jwtUtil.createJwt(name, username, role, 60*60*60L);
+            response.addCookie(createCookie("Authorization", token));
+            response.sendRedirect("http://localhost:3000/");
+        } else {
+            //인증된 Authentication객체에서 얻은 username과 role로 JWT token을 생성한다.
+            String token = jwtUtil.createJwt(name, username, role, 60*60*60L);
 
-        //JWT token을 헤더 쿠키에 넣어서 응답한다.
-        response.addCookie(createCookie("Authorization", token));
-        response.sendRedirect("http://localhost:3000/");
+            //JWT token을 헤더 쿠키에 넣어서 응답한다.
+            response.addCookie(createCookie("Authorization", token));
+            response.sendRedirect("http://localhost:3000/");
+        }
     }
 
     private Cookie createCookie(String key, String value) {

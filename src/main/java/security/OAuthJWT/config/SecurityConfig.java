@@ -16,6 +16,7 @@ import security.OAuthJWT.jwt.JWTUtil;
 import security.OAuthJWT.oauth2.CustomSuccessHandler;
 import security.OAuthJWT.service.CustomOAuth2UserService;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 @Configuration
@@ -42,9 +43,10 @@ public class SecurityConfig {
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedHeaders(Collections.singletonList("*"));
                         configuration.setMaxAge(3600L);
+                        configuration.setExposedHeaders(Arrays.asList("Set-Cookie", "Authorization")); // 두 개의 헤더를 한 번에 설정
 
-                        configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
-                        configuration.setExposedHeaders(Collections.singletonList("Authorization"));
+//                        configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
+//                        configuration.setExposedHeaders(Collections.singletonList("Authorization"));
 
                         return configuration;
                     }
@@ -69,8 +71,9 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/").permitAll()
-                        .anyRequest().authenticated());
+                        .requestMatchers("/").hasRole("USER2")
+                        .requestMatchers("/more-info").hasRole("USER")
+                        .anyRequest().hasRole("USER2"));
 
         http
                 .sessionManagement((session) -> session

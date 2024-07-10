@@ -23,9 +23,20 @@ public class User {
     private String name;
     private String email;
     private String role;
+    private String likedFood;
+    private String gender;
 
     public void updateUserInfo(String name, String email) {
         this.name = name;
         this.email = email;
+    }
+
+    public void addMoreInfo(String likedFood, String gender) {
+        this.likedFood = likedFood;
+        this.gender = gender;
+    }
+
+    public void updateRole(String role) {
+        this.role = role;
     }
 }
