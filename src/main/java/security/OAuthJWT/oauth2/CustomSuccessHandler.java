@@ -25,18 +25,24 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+        //소셜 로그인에 성공했을 경우 인증된 Authentication을 OAuth2AuthenticationToken으로 캐스팅한다.
         OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) authentication;
 
+        //OAuth2AuthenticationToken에서 principal을 가져와 그 안의 name값을 꺼낸다.
         OAuth2User principal = authToken.getPrincipal();
         String username = principal.getName();
 
+        //OAuth2AuthenticationToken에서 Authorities를 꺼낸다.
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        //꺼낸 authorities에서 role을 꺼낸다.
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
+        //인증된 Authentication객체에서 얻은 username과 role로 JWT token을 생성한다.
         String token = jwtUtil.createJwt(username, role, 60*60*60L);
 
+        //JWT token을 헤더 쿠키에 넣어서 응답한다.
         response.addCookie(createCookie("Authorization", token));
         response.sendRedirect("http://localhost:3000/");
     }
