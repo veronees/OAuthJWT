@@ -14,8 +14,6 @@ import security.OAuthJWT.dto.UserDTO;
 import security.OAuthJWT.entity.User;
 import security.OAuthJWT.repository.UserRepository;
 
-import java.util.Map;
-
 @Service
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
@@ -60,8 +58,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             userDTO.setName(oAuth2Response.getName());
             userDTO.setRole("ROLE_USER");
 
-
-            return new CustomOauth2User(userDTO);
+            System.out.println("OAuth2서비스 클래스에서 UserDTO에 담긴 name 값 : " + userDTO.getName());
+            CustomOauth2User customOauth2User = new CustomOauth2User(userDTO);
+            System.out.println("OAuth2서비스 클래스에서 customOauth2User에 담긴 name 값 : " + customOauth2User.getName());
+            return customOauth2User;
 
             //기존에 회원가입이 되어 있는 유저인 경우
         } else {

@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import security.OAuthJWT.dto.CustomOauth2User;
 import security.OAuthJWT.jwt.JWTUtil;
 
 import java.io.IOException;
@@ -30,7 +31,9 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         //OAuth2AuthenticationToken에서 principal을 가져와 그 안의 name값을 꺼낸다.
         OAuth2User principal = authToken.getPrincipal();
-        String username = principal.getName();
+        String name = principal.getName();
+        CustomOauth2User customOauth2User = (CustomOauth2User) principal;
+        String username = customOauth2User.getUsername();
 
         //OAuth2AuthenticationToken에서 Authorities를 꺼낸다.
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -40,7 +43,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String role = auth.getAuthority();
 
         //인증된 Authentication객체에서 얻은 username과 role로 JWT token을 생성한다.
-        String token = jwtUtil.createJwt(username, role, 60*60*60L);
+        String token = jwtUtil.createJwt(name, username, role, 60*60*60L);
 
         //JWT token을 헤더 쿠키에 넣어서 응답한다.
         response.addCookie(createCookie("Authorization", token));
