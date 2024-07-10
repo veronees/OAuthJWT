@@ -34,4 +34,4 @@ spring:
         show_sql: true
 
   jwt:
-    secret: aaaaaabbbbbbbcccccccdddddeeeeffffffffgggggggghhhhhhh
+    secret: ${SECRET}
